@@ -98,42 +98,15 @@ coordinate_calc <- function(HSL) {
 
 dist_calculate <- function(dataset) {
   
-  points.x.list <- base::as.list(dataset[,1])
+  points_matrix <- (ICSNP::pair.diff(as.matrix(dataset)))^2
   
-  points.x.sqr.diff <- as.data.frame(
-    base::sapply(points.x.list, 
-           function(x) base::sapply(points.x.list, 
-                              function(y) {
-                                (y-x)^2
-                              }))
-  )
-  
-  diag(points.x.sqr.diff) <- NA
-  points.x.sqr.diff <- as.data.frame(apply(X = points.x.sqr.diff, MARGIN = 2, 
-                                           FUN = function(i) {i[which(!is.na(i))]}))
+  points_matrix <- sqrt(c(points_matrix[,1] + points_matrix[,2]))
   
   ####************####
   
-  points.y.list <- as.list(dataset[,2])
-  points.y.sqr.diff <- as.data.frame(
-    sapply(points.y.list, 
-           function(x) sapply(points.y.list, 
-                              function(y) {
-                                (y-x)^2
-                              }))
-  )
-  
-  diag(points.y.sqr.diff) <- NA
-  points.y.sqr.diff <- as.data.frame(apply(X = points.y.sqr.diff, MARGIN = 2, 
-                                           FUN = function(i) {i[which(!is.na(i))]}))
-  
-  ####************####
-  
-  final.dist.table <- sqrt(points.x.sqr.diff + points.y.sqr.diff)
-  
-  final.results <- list(Table = final.dist.table,
-                        Mean = round(mean(as.matrix(final.dist.table)), digits = 2),
-                        SD = round(sd(as.matrix(final.dist.table)), digits = 2))
+  final.results <- list(Table = points_matrix,
+                        Mean = round(mean(points_matrix, na.rm = TRUE), digits = 2),
+                        SD = round(sd(points_matrix, na.rm = TRUE), digits = 2))
   
   return(final.results)
   
@@ -149,7 +122,7 @@ inputFile$sample_segment <- paste(inputFile$Sample, inputFile$Segment, sep = "_"
 ## Merged (both sample- and segment-based) analysis
 inputFile_mergedSplit <- base::split(x = inputFile, f = inputFile$sample_segment)
 
-inputFile.merged.res <- base::lapply(X = inputFile_mergedSplit, dist_calculate)
+inputFile.merged.res <- base::lapply(X = inputFile_mergedSplit, function(i) {dist_calculate(i[,c(1,2)])})
 
 inputFile.merged.res.summaried <- as.data.frame(matrix(data = c(1:3), nrow = 1, ncol = 3))
 colnames(inputFile.merged.res.summaried) <- c("Sample_Segment", "Mean", "SD")
@@ -182,7 +155,7 @@ merged_plot <- ggplot(data = inputFile.merged.res.summaried,
 
 ## Sample-based analysis
 inputFile_sampleSplit <- base::split(x = inputFile, f = inputFile$Sample)
-inputFile.sample.res <- base::lapply(X = inputFile_sampleSplit, dist_calculate)
+inputFile.sample.res <- base::lapply(X = inputFile_sampleSplit, function(i) {dist_calculate(i[,c(1,2)])})
 
 inputFile.sample.res.summaried <- as.data.frame(matrix(data = c(1:3), nrow = 1, ncol = 3))
 colnames(inputFile.sample.res.summaried) <- c("Sample_Segment", "Mean", "SD")
@@ -241,17 +214,48 @@ sample_plot <- ggplot(data = inputFile.sample.res.summaried,
   library(jpeg)
   library(colordistance)
   
-  test.image <- colordistance::loadImage(path = "Resources/Nguyen-2017-Cell Stem Cell 5.png", 
-                                         lower = c(0, 0, 0), upper = c(0.1, 0.1, 0.1), 
+  test.image <- colordistance::loadImage(path = "Resources/download (1).jpeg", 
+                                         lower = c(0, 0, 0), upper = c(0, 0, 0), 
                                          hsv = TRUE, alpha.channel = FALSE)
+
+  test.image2 <- colordistance::loadImage(path = "Resources/test1.png", 
+                                         lower = c(0, 0, 0), upper = c(0, 0, 0), 
+                                         hsv = TRUE, alpha.channel = FALSE)
+
+  test.image3 <- colordistance::loadImage(path = "Resources/test2.png", 
+                                          lower = c(0, 0, 0), upper = c(0, 0, 0), 
+                                          hsv = TRUE, alpha.channel = FALSE)
+  
+  
+  test.image <- readImage(files = "/Users/asal0019/Downloads/untitled folder/F3.large.jpg")
+  writeImage(x = test.image, files = "/Users/asal0019/Downloads/untitled folder/testEB.tiff", type = "tiff")
+  
   colordistance::plotImage(test.image)
   
   
+  img <- test.image$original.rgb
+
+  img <- 
+    ggplot() +
+    annotation_custom(rasterGrob(img, 
+                                 width = unit(1,"npc"),
+                                 height = unit(1,"npc")), 
+                      -Inf, Inf, -Inf, Inf)
   
-  test.image.section1 <- imagefx::crop.image(img = test.image$original.rgb, pick = TRUE)
+  img
+  
+  dim(test.image$original.rgb)
+  
+  
+  
+  test.image.section1 <- imagefx::crop.image(img = test.image$original.rgb, 
+                                             xleft = 74.78469, ybottom = 179.2653, 
+                                             xright = 94.04187, ytop = 233.4366, pick = FALSE)
+  png::writePNG(image = test.image.section1$img.crop, target = "Resources/test1.png", dpi = 300)
+  
+  
   test.image.section2 <- imagefx::crop.image(img = test.image$original.rgb, pick = TRUE)
 
-  png::writePNG(image = test.image.section1$img.crop, target = "Resources/test1.png", dpi = 300)
   png::writePNG(image = test.image.section2$img.crop, target = "Resources/test2.png", dpi = 300)
   
   # test.image$original.rgb
@@ -262,14 +266,7 @@ sample_plot <- ggplot(data = inputFile.sample.res.summaried,
                                                   hsv = TRUE, alpha.channel = FALSE)
   colordistance::plotImage(test.image.section1)
   
-  test.image.section2 <- colordistance::loadImage(path = "Resources/test2.png", 
-                                                  lower = c(0, 0, 0), upper = c(0.1, 0.1, 0.1), 
-                                                  hsv = TRUE, alpha.channel = FALSE)
-  colordistance::plotImage(test.image.section2)
-  
   getImageHist(test.image.section1, hsv = TRUE, bins = 4)
-  getImageHist(test.image.section2, hsv = TRUE, bins = 4)
-
   
   test.image.section1$filtered.rgb.2d <- test.image.section1$filtered.rgb.2d * 255
   test.image.section1.hsl <- as.data.frame(t(rgb2hsl(t(test.image.section1$filtered.rgb.2d))))
@@ -299,3 +296,8 @@ sample_plot <- ggplot(data = inputFile.sample.res.summaried,
   
   alaki <- imager::cannyEdges(im = test.image.section1,alpha = 0.3)
   plot(alaki)
+  
+  
+  
+  
+  
