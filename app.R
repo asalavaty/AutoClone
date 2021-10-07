@@ -3619,9 +3619,9 @@ ui = bs4DashPage(
                 tags$b("Please use the following Zenodo DOI to cite the AutoClone App", style="font-size:20px;"), br(), br(), br(), 
                 
                 bs4InfoBox(
-                  title = p("Abbas Salavaty and Peter D. Currie. ", tags$em("AutoClone: Automatic analysis of genetic labelling lata and clonality assessment."), " 2021."),
-                  value = "DOI:XXXXX",
-                  subtitle = tags$a(href = "https://www.google.com/", "Zenodo AutoClone App Web Page"),
+                  title = p("Abbas Salavaty and Peter D. Currie. ", tags$em("AutoClone: automatic analysis of genetic labelling data and clonality assessment."), " 2021."),
+                  value = "DOI:10.5281/zenodo.5553555",
+                  subtitle = tags$a(href = "https://zenodo.org/record/5553555", "AutoClone App Zenodo Web Page"),
                   icon = shiny::icon("scroll"),
                   color = "olive",
                   width = 12,

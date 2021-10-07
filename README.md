@@ -5,7 +5,8 @@
 
 <!-- badges: start -->
 
-[![](https://img.shields.io/badge/AutoClone%20Web%20App-blue.svg)](https://github.com/asalavaty/influential)
+[![](https://img.shields.io/badge/AutoClone%20Web%20App-green.svg)](https://github.com/asalavaty/influential)
+[![DOI](https://zenodo.org/badge/389617986.svg)](https://zenodo.org/badge/latestdoi/389617986)
 <!-- badges: end -->
 
 ## Overview
@@ -36,16 +37,16 @@ Peter D. Currie
 
 ## Shiny app
 
--   [AutoClone Shiny Dashboard](https://autoclone.erc.monash.edu/)
+[AutoClone Shiny Dashboard](https://autoclone.erc.monash.edu/)
 
 ## How to cite `AutoClone`
 
 To cite `AutoClone`, please cite its Zenodo DOI:
 
--   Integrated Value of Influence: An Integrative Method for the
-    Identification of the Most Influential Nodes within Networks. Abbas
-    Salavaty, Mirana Ramialison, Peter D Currie. *Patterns*. 2020.08.14
-    ([Read online](https://doi.org/10.1016/j.patter.2020.100052)).
+-   AutoClone: automatic analysis of genetic labelling data and
+    clonality assessment. Abbas Salavaty and Peter D. Currie. (2021).
+    *Zenodo*.
+    **[DOI:10.5281/zenodo.5553555](https://doi.org/10.5281/zenodo.5553555)**.
 
 ## How to contribute
 
