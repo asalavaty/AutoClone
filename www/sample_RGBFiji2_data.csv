@@ -1,0 +1,31 @@
+Section,RGB,RGB_value,Image,Group
+Segment A,red,70,Img1,Mut
+,green,60,,
+,blue,80,,
+,red,95,,
+,green,78,,
+,blue,94,,
+,red,71,Img2,WT
+,green,77,,
+,blue,93,,
+,red,96,,
+,green,49,,
+,blue,89,,
+Segment B,red,79,Img1,Mut
+,green,56,,
+,blue,95,,
+,red,78,,
+,green,101,,
+,blue,114,,
+,red,70,,
+,green,70,,
+,blue,96,,
+,red,67,Img2,WT
+,green,90,,
+,blue,111,,
+,red,68,,
+,green,112,,
+,blue,101,,
+,red,156,,
+,green,133,,
+,blue,72,,
