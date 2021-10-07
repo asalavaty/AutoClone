@@ -1,9 +1,4 @@
 
-<!-- Set the style of body text -->
-<style>
-body {
-text-align: justify}
-</style>
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # AutoClone <a href='https://github.com/asalavaty/AutoClone'><img src='Figures/AutoClone-Logo.png' align="right" height="221" /></a>
