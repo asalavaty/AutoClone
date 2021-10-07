@@ -865,7 +865,7 @@ ui = bs4DashPage(
                             CLoNe (for different tissues and species of mouse and chick) [4], and Zebrabow (for different zebrafish 
                             organs and tissues) [5]."), 
                             p(style = "text-align: justify; font-size: 16px;",
-                              "One of the important aspects of labelling-based lineage tracing and clonal analysis is the quanitification 
+                              "One of the important aspects of labelling-based lineage tracing and clonal analysis is the quantification 
                               and statistical evaluation of the results (i.e. converting visual colors to interpretable statistics). In 
                               this regard, several methods have been proposed so far for color quantification and clonality 
                               assessment [6, 7]. Nguyen and Currie in a Methods paper [8] proposed a novel approach for 
