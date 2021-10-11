@@ -4,7 +4,7 @@ library(Cairo)   # For nicer ggplot2 output when deployed on Linux ## Remember t
 # apt-get install libxt-dev
 library(DT)
 library(shinyWidgets)
-library(shinyFeedback) # GitGub version
+library(shinyFeedback)
 library(shinyjs)
 library(shinycssloaders)
 library(colordistance)
@@ -854,9 +854,9 @@ ui = bs4DashPage(
                 argonRow(
                 argonColumn(width = 7, style = "padding-right: 50px;",
                             p(style = "text-align: justify; font-size: 16px;",
-                            "The clonality assessment is a technique used to evaluate the similarity of cells/fibres 
+                            "The clonality assessment is a technique used to evaluate the similarity of cells/fibers 
                                   generated through a biological process or through development. This technique can also be used 
-                                  for lineage tracing of cells/fibres during development. There are several methods for performing 
+                                  for lineage tracing of cells/fibers during development. There are several methods for performing 
                                   these analyses most of which rely on genetic cell labelling and coloring of the cells. Brainbow, 
                             a fluorescent dependent, lineage tracing technique, is of the very first proposed lineage tarcing 
                             techniques and is basically used for simultaneous tracing of multiple neural cells in mice [1]. Subsequently, 
@@ -870,10 +870,10 @@ ui = bs4DashPage(
                               this regard, several methods have been proposed so far for color quantification and clonality 
                               assessment [6, 7]. Nguyen and Currie in a Methods paper [8] proposed a novel approach for 
                               quantifying the clonality and assessing multiple colour profiles of clones, which enables the 
-                              simultaneous comparison of the clonality of several clusters of cells/fibres. This approach works based 
+                              simultaneous comparison of the clonality of several clusters of cells/fibers. This approach works based 
                               on the transformation of color points to RGB values to Hue and Saturation values, and finally to X and Y 
                               coordinates. Accordingly, distances between individual clones can be quantified and a high mean 
-                              distance value between all pairs of cells/fibres within a cluster indicates a stochastic
+                              distance value between all pairs of cells/fibers within a cluster indicates a stochastic
                               profile while a low mean distance corresponds to a clonal profile. In this approach the three channel 
                               (RGB) profile of the clones is converted to a 2D spcae color profile. However, it is possible to maintain 
                               all three channels and convert the RGB to a 3D spcae color profile (i.e. converting RGB values to 
@@ -1202,7 +1202,7 @@ ui = bs4DashPage(
                                  style = "font-size: 14px; border-bottom:1px dotted grey;"),
                                
                                p(tags$b("III. ", style = "font-size: 18px;"),
-                                 "Select your desired clone of cells/fibres by dragging/brushing on the image in ",
+                                 "Select your desired clone of cells/fibers by dragging/brushing on the image in ",
                                  tags$b("Step 2"), ".",
                                  style = "font-size: 14px; border-bottom:1px dotted grey;"),
                                
