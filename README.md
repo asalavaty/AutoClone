@@ -15,9 +15,9 @@
 based on the data generated through genetic cell labelling and lineage
 tracing assays. The AutoClone app includes three major modes relevant to
 the input data. The clonality assessment is a technique used to evaluate
-the similarity of cells/fibres generated through a biological process or
+the similarity of cells/fibers generated through a biological process or
 through development. This technique can also be used for lineage tracing
-of cells/fibres during development. There are several methods for
+of cells/fibers during development. There are several methods for
 performing these analyses most of which rely on genetic cell labelling
 and coloring of the cells. One of the important aspects of
 labelling-based lineage tracing and clonal analysis is the
