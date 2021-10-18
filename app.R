@@ -20,11 +20,9 @@ library(waiter)
 library(argonR)
 library(bs4Dash)
 library(ICSNP)
-library(promises)
-library(future)
-library(ipc)
 library(magrittr)
 library(dplyr)
+library(plyr)
 library(tidyselect)
 library(tidyr)
 library(emayili)
@@ -36,11 +34,6 @@ pete_url <- "https://www.armi.org.au/about/our-people/peter-currie/"
 
 # options(bitmapType='cairo')
 
-plan(multicore)
-
-# options(future.globals.onReference = "error")
-options(future.globals.onReference = "ignore")
-options(future.globals.maxSize=Inf)
 options(shiny.usecairo = TRUE)
 options(shiny.maxRequestSize = Inf)
 options(warn=-1)
@@ -5131,10 +5124,12 @@ server <- function(input, output, session) {
           
         }
         
-        autoClonizeRes_progress <- AsyncProgress$new(session, value = 20, min=1, max=100,
-                                                     message = "Autoclonization is in progress ...")
-        
-        future_promise({
+        progressSweetAlert(
+          session = session, id = "majorImg_autoClonizeRes_progress",
+          title = "Autoclonization is in progress ...",
+          striped = TRUE, 
+          display_pct = TRUE, value = 20
+        )
 
         lapply(X = 1:nrow(majorImgSections$df),
                FUN = function(i) {
@@ -5164,16 +5159,25 @@ server <- function(input, output, session) {
                      
                      autoClonized$job <- i + 1
                      
-                     autoClonizeRes_progress$set(value = i*(100/nrow(majorImgSections$df)), 
-                                                 message = paste0("Section ", i, " is now processed ..."))
+                     
+                     # Update the progress bar
+                     updateProgressBar(
+                       session = session,
+                       title = paste0("Section ", i, " is now processed ..."),
+                       id = "majorImg_autoClonizeRes_progress",
+                       value = i*(100/nrow(majorImgSections$df))
+                     )
                      
                    })
                    
-                   autoClonizeRes_progress$close()
-                   
-               })
-        
         autoClonized$BtnClicked <- autoClonized$BtnClicked + 1
+        
+        closeSweetAlert(session = session)
+        sendSweetAlert(
+          session = session,
+          title =" Autoclonization completed!",
+          type = "success"
+        )
 
       }
 
@@ -5222,7 +5226,7 @@ server <- function(input, output, session) {
         ###################
         # Generate plot
         
-        secDistsPlot <- 
+        secDistsPlot <-  
           majorImgSections$df %>% 
           ggplot(
             aes(x = secDistsPlotXaxis, y = Mean, fill = secDistsPlotXaxis)) + 
@@ -6186,10 +6190,12 @@ server <- function(input, output, session) {
           
         }
         
-        minor_autoClonizeRes_progress <- AsyncProgress$new(session, value = 20, min=1, max=100,
-                                                           message = "Autoclonization is in progress ...")
-        
-        future_promise({
+        progressSweetAlert(
+          session = session, id = "minorImg_autoClonizeRes_progress",
+          striped = TRUE, 
+          title = "Autoclonization is in progress ...",
+          display_pct = TRUE, value = 20
+        )
           
           lapply(X = 1:nrow(minorImgSections$df),
                  FUN = function(i) {
@@ -6219,16 +6225,24 @@ server <- function(input, output, session) {
                    
                    minor_autoClonized$job <- i + 1
                    
-                   minor_autoClonizeRes_progress$set(value = i*(100/nrow(minorImgSections$df)), 
-                                                     message = paste0("Section ", i, " is now processed ..."))
+                   # Update the progress bar
+                   updateProgressBar(
+                     session = session,
+                     title = paste0("Section ", i, " is now processed ..."),
+                     id = "minorImg_autoClonizeRes_progress",
+                     value = i*(100/nrow(minorImgSections$df))
+                   )
                    
                  })
-          
-          minor_autoClonizeRes_progress$close()
-          
-        })
         
         minor_autoClonized$BtnClicked <- minor_autoClonized$BtnClicked + 1
+        
+        closeSweetAlert(session = session)
+        sendSweetAlert(
+          session = session,
+          title =" Autoclonization completed!",
+          type = "success"
+        )
         
       }
       
@@ -7236,6 +7250,7 @@ server <- function(input, output, session) {
       progressSweetAlert(
         session = session, id = "color_coord_autoClonizeRes_progress",
         title = "Autoclonization is in progress ...",
+        striped = TRUE, 
         display_pct = TRUE, value = 20
       )
 
