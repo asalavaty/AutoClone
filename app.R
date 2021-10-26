@@ -21,8 +21,8 @@ library(argonR)
 library(bs4Dash)
 library(ICSNP)
 library(magrittr)
-library(dplyr)
 library(plyr)
+library(dplyr)
 library(tidyselect)
 library(tidyr)
 library(emayili)
@@ -6462,6 +6462,9 @@ server <- function(input, output, session) {
       shinyjs::reset(id = "columnImageOption")
       shinyjs::reset(id = "columnGroupOption")
       color_coord_processed$data <- NULL
+      shinyjs::hide(id = "RGBvalunif_RcolumnName")
+      shinyjs::hide(id = "RGBvalunif_GcolumnName")
+      shinyjs::hide(id = "RGBvalunif_BcolumnName")
     })
     
     ## read in the input data
@@ -6493,10 +6496,14 @@ server <- function(input, output, session) {
       color_coord_data4Fiji$data <- color_coord_data()[complete.cases(color_coord_data()[,c(input$RGBval_UnifiedcolumnName,
                                                                                     input$RGBval_UnifiedValuecolumnName)]),]
       
+      color_coord_data4Fiji$data$Index <- rep(1:(nrow(color_coord_data4Fiji$data)/3), each = 3)
+      
       color_coord_data4Fiji$data <- color_coord_data4Fiji$data %>% 
         tidyr::fill(colnames(color_coord_data4Fiji$data)) %>% 
         tidyr::spread(key = input$RGBval_UnifiedcolumnName, 
                       value = input$RGBval_UnifiedValuecolumnName)
+      
+      color_coord_data4Fiji$data$Index <- NULL
       
       if(any(is.na(color_coord_data4Fiji$data))) {
         
