@@ -6496,6 +6496,20 @@ server <- function(input, output, session) {
       color_coord_data4Fiji$data <- color_coord_data()[complete.cases(color_coord_data()[,c(input$RGBval_UnifiedcolumnName,
                                                                                     input$RGBval_UnifiedValuecolumnName)]),]
       
+      if(as.integer(nrow(color_coord_data4Fiji$data)/3) != nrow(color_coord_data4Fiji$data)/3) {
+        
+        sendSweetAlert(
+          session = session,
+          title = "Some data are missing!",
+          text = tags$p("Please check the missing information before re-uploading the dataset. 
+                        Perhaps some RGB values are not complete (i.e. one of R, G, or B values are missing). 
+                        The number of rows of the dataset should be divisible by 3!"),
+          type = "warning"
+        )
+        
+        color_coord_data4Fiji$data <- NULL
+      } else {
+      
       color_coord_data4Fiji$data$Index <- rep(1:(nrow(color_coord_data4Fiji$data)/3), each = 3)
       
       color_coord_data4Fiji$data <- color_coord_data4Fiji$data %>% 
@@ -6505,12 +6519,15 @@ server <- function(input, output, session) {
       
       color_coord_data4Fiji$data$Index <- NULL
       
+      }
+      
       if(any(is.na(color_coord_data4Fiji$data))) {
         
         sendSweetAlert(
           session = session,
-          title = "There are some redundant columns in the input data!",
-          text = tags$p("Please remove the redundant columns from the dataset and re-upload the dataset."),
+          title = "Some data are missing or the data is not properly structured!",
+          text = tags$p("Please check the formatting of your data and complete any missing information before re-uploading the dataset. 
+                        Perhaps some RGB values are not complete (i.e. one of R, G, or B values are missing!)"),
           type = "warning"
         )
         
