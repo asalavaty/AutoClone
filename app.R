@@ -847,38 +847,39 @@ ui = bs4DashPage(
                 argonRow(
                 argonColumn(width = 7, style = "padding-right: 50px;",
                             p(style = "text-align: justify; font-size: 16px;",
-                            "The clonality assessment is a technique used to evaluate the similarity of cells/fibers 
-                                  generated through a biological process or through development. This technique can also be used 
-                                  for lineage tracing of cells/fibers during development. There are several methods for performing 
-                                  these analyses most of which rely on genetic cell labelling and coloring of the cells. Brainbow, 
-                            a fluorescent dependent, lineage tracing technique, is of the very first proposed lineage tarcing 
-                            techniques and is basically used for simultaneous tracing of multiple neural cells in mice [1]. Subsequently, 
-                            this technique was adapted to several other tissues and model organisms such as Rainbow (for a variety of 
-                            mice/mammalian tissues) [2], Flybow (for neural circuit analysis in Drosophila melanogaster) [3], 
-                            CLoNe (for different tissues and species of mouse and chick) [4], and Zebrabow (for different zebrafish 
-                            organs and tissues) [5]."), 
+                            "The clonality assessment is a technique used to evaluate the similarity of cells/fibers based on their color profiles. 
+                            It is taking advantage of multi-color systems generally used for fate mapping and lineage tracing strategies upon biological 
+                            processes such as development and regeneration. Among those systems, the “Brainbow” mouse consists of the stochastic multi-color 
+                            labelling of neuronal cells [1]. This technique relies on the Cre-Lox recombination system that 
+                            allows the combination of multiple fluorophores within the cell of interest. Subsequently, this technique 
+                            has been adapted to several other tissues and model organisms such as the Rainbow (for a variety of mice/mammalian tissues) [2], 
+                            Flybow (for neural circuit analysis in Drosophila melanogaster) [3], CLoNe (for different tissues and species of 
+                            mouse and chick) [4], and Zebrabow (for different zebrafish organs and tissues) [5]. Importantly, the Zebrabow 
+                            system has been key in uncovering muscle stem cell dynamics upon growth and regeneration, through the concept of 
+                            clonality. Tissue-resident stem cells have the capacity to self-renew and give rise to progenies committed to terminal 
+                            differentiation. Upon their expansion, these cells will generate clones that are believed to share some genetic features, 
+                            such as the initial color they have been attributed. In order to identify cells coming from a common progenitor, one has 
+                            to be able to distinguish them from the randomly distributed ones."), 
                             p(style = "text-align: justify; font-size: 16px;",
-                              "One of the important aspects of labelling-based lineage tracing and clonal analysis is the quantification 
-                              and statistical evaluation of the results (i.e. converting visual colors to interpretable statistics). In 
-                              this regard, several methods have been proposed so far for color quantification and clonality 
-                              assessment [6, 7]. Nguyen and Currie in a Methods paper [8] proposed a novel approach for 
-                              quantifying the clonality and assessing multiple colour profiles of clones, which enables the 
-                              simultaneous comparison of the clonality of several clusters of cells/fibers. This approach works based 
-                              on the transformation of color points to RGB values to Hue and Saturation values, and finally to X and Y 
-                              coordinates. Accordingly, distances between individual clones can be quantified and a high mean 
-                              distance value between all pairs of cells/fibers within a cluster indicates a stochastic
-                              profile while a low mean distance corresponds to a clonal profile. In this approach the three channel 
-                              (RGB) profile of the clones is converted to a 2D spcae color profile. However, it is possible to maintain 
-                              all three channels and convert the RGB to a 3D spcae color profile (i.e. converting RGB values to 
-                              Hue, Saturation, and Lightness values, and finally to X, Y and Z coordinates). The following figures [9] illustrate 
-                              how colors could be transformed into coordinates in a 2D or 3D space. The AutoClone web app implements both of 
-                              these approaches, namely 2D and 3D color space-based coordinate measuremant, to perform clonality assessment in 
-                              three different modes which are illustrated in the right-hand side figure and are explained in the following three 
-                              boxes."
+                              "One of the important aspects of multi-colored lineage tracing systems is the quantification and 
+                              statistical evaluation of the results (i.e. converting visual colors to interpretable statistics). 
+                              In this regard, several methods have been proposed so far for color quantification and clonality 
+                              assessment [6, 7]. Nguyen and Currie in a Methods paper [8] proposed a novel approach for quantifying 
+                              the clonality and assessing multiple color profiles of clones, which enables the simultaneous comparison of 
+                              the clonality of several clusters of cells/fibers. This approach works based on the translation of color values, 
+                              such as Hue and Saturation, to trigonometric points with X and Y coordinates. Accordingly, to statistically evaluate 
+                              the color similarity between individual clones, distances between two points (equivalent to cell or fiber) are calculated. 
+                              While a high distance value between two points indicates a stochastic profile, a low mean distance corresponds to a clonal 
+                              profile. In this approach, the three-channel (HSL) profile of the clones is converted to a 2D space color wheel. However, it 
+                              is possible to maintain all three channels and convert the HSL to a 3D space color profile (i.e. converting 
+                              Hue, Saturation, and Lightness values, to obtain X, Y and Z coordinates). The following figures [9] illustrate 
+                              how colors could be transformed into coordinates in a 2D or 3D space. The AutoClone web app implements both 
+                              of these approaches, namely 2D and 3D color space-based coordinate measuremant, to perform clonality assessment 
+                              in three different modes which are illustrated in the right-hand side figure and are explained in the following three boxes."
                             )
                             ),
                 argonColumn(width = 5, center = TRUE,
-                            tags$img(src = "AutoClone Workflow.png", width = "100%", height = "75%")
+                            tags$img(src = "AutoClone Workflow.png", width = "100%", height = "67%")
                             )
                 ),
                 argonRow(center = TRUE,
