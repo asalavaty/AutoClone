@@ -3717,16 +3717,27 @@ ui = bs4DashPage(
                          argonColumn(width = 8,
                                      p("Change Log - version and update history"), br(),
                                      
+                                     p(tags$b("Version 1.2")),
+                                     tags$ul(
+                                       tags$li("Revising the introduction."),
+                                       tags$li("Debugging mode 3 of the app.")),
+                                     p("Update: October 27, 2021."),
+                                     
+                                     p(tags$b("Version 1.1")),
+                                     tags$ul(
+                                       tags$li("Adding capability to read in Fiji outputs.")),
+                                     p("Update: October 09, 2021."),
+                                     
                                      p(tags$b("Version 1.0")),
                                      tags$ul(
                                        tags$li("Initial deployment")),
-                                     p("Update: October 21, 2021.")
+                                     p("Update: September 21, 2021.")
                                      ),
                          argonColumn(width = 4,
                                      bs4InfoBox(
                                        title = "Lastest Version",
-                                       value = "V. 1.0",
-                                       subtitle = "October 21, 2021",
+                                       value = "V. 1.2",
+                                       subtitle = "October 27, 2021",
                                        icon = shiny::icon("laptop-code"),
                                        color = "maroon",
                                        width = 12,
