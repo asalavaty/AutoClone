@@ -3101,7 +3101,25 @@ ui = bs4DashPage(
                                                                   )
                                                                 ),
                                                                 
+                                                                argonRow(
+                                                                  
+                                                                  # Show section names
+                                                                  argonColumn(width = 6, center = FALSE,
+                                                                              tags$b("Add section names?"),
+                                                                              prettyToggle(
+                                                                                inputId = "color_coord_secDistsPlotSectionNames",
+                                                                                label_on = "Yes!", 
+                                                                                icon_on = icon("check"),
+                                                                                status_on = "success",
+                                                                                status_off = "warning", 
+                                                                                label_off = "No",
+                                                                                icon_off = icon("times"),
+                                                                                value = TRUE
+                                                                              )
+                                                                  ),
+                                                                              
                                                                 # Show error bars
+                                                                argonColumn(width = 6, center = FALSE,
                                                                 tags$b("Add error bars?"),
                                                                 prettyToggle(
                                                                   inputId = "color_coord_secDistsPlotErrorBars",
@@ -3112,6 +3130,8 @@ ui = bs4DashPage(
                                                                   label_off = "No",
                                                                   icon_off = icon("times"),
                                                                   value = TRUE
+                                                                )
+                                                                )
                                                                 ),
                                                                 
                                                                 # Select color palette
@@ -3359,6 +3379,18 @@ ui = bs4DashPage(
                                                   )
                                                 ),
                                                 
+                                                tags$b("Add section names?"),
+                                                prettyToggle(
+                                                  inputId = "color_coord_secDistsStatsPlotSectionNames",
+                                                  label_on = "Yes!", 
+                                                  icon_on = icon("check"),
+                                                  status_on = "success",
+                                                  status_off = "warning", 
+                                                  label_off = "No",
+                                                  icon_off = icon("times"),
+                                                  value = TRUE
+                                                ),
+                                                
                                                 
                                                 # Select color palette
                                                 pickerInput(
@@ -3458,6 +3490,7 @@ ui = bs4DashPage(
                                            choices = c("Section" = "section",
                                                        "Section + Img" = "section_image",
                                                        "Section + Grp" = "section_group",
+                                                       "Img + Grp" = "image_group",
                                                        "Section + Img + Grp" = "section_image_group"),
                                            multiple = FALSE
                                          )
@@ -3573,7 +3606,8 @@ ui = bs4DashPage(
                                       label = "Define the variable for performing ANOVA:",
                                       choices = c("Section" = "Group_Img_SectionName", 
                                                   "Image" = "ImgName", 
-                                                  "Group" = "GroupName"),
+                                                  "Group" = "GroupName",
+                                                  "Group-Image" = "Group_ImgName"),
                                       individual = TRUE,
                                       checkIcon = list(
                                         yes = tags$i(class = "fa fa-circle", 
@@ -7016,6 +7050,21 @@ server <- function(input, output, session) {
         } else {
           color_coord_processed$data[,"section"]
         }
+      
+      color_coord_processed$data$image_group <- 
+        if(!is.null(input$columnImageName) & !is.null(input$columnGroupName)) {
+          paste(as.character(color_coord_processed$data[,"image"]),
+                as.character(color_coord_processed$data[,"group"]),
+                sep = "-")
+        } else if(!is.null(input$columnImageName) & is.null(input$columnGroupName)) {
+          paste(as.character(color_coord_processed$data[,"image"]),
+                sep = "-")
+        } else if(is.null(input$columnImageName) & !is.null(input$columnGroupName)) {
+          paste(as.character(color_coord_processed$data[,"group"]),
+                sep = "-")
+        } else {
+          color_coord_processed$data[,"section"]
+        }
 
       showToast(type = "success", 
                 message =  NULL, 
@@ -7037,6 +7086,9 @@ server <- function(input, output, session) {
         
       } else if(input$color_coord_palette_groupby == "section_group") {
         unique(color_coord_processed$data[,"section_group"])
+        
+      } else if(input$color_coord_palette_groupby == "image_group") {
+        unique(color_coord_processed$data[,"image_group"])
         
       } else if(input$color_coord_palette_groupby == "section_image_group") {
         unique(color_coord_processed$data[,"section_image_group"])
@@ -7233,7 +7285,8 @@ server <- function(input, output, session) {
                                                                  Mean = numeric(),
                                                                  SD = numeric(),
                                                                  ImgName = character(), 
-                                                                 GroupName = character()))
+                                                                 GroupName = character(),
+                                                                 Group_ImgName = character()))
     
     # Perform the Autoclonization
     
@@ -7302,7 +7355,8 @@ server <- function(input, output, session) {
                       Mean = Mean,
                       SD = SD,
                       ImgName = any_of("image"),
-                      GroupName = any_of("group"))
+                      GroupName = any_of("group"),
+                      Group_ImgName = any_of("image_group"))
 
 
       ## correcting the order of rows of the data frame
@@ -7396,18 +7450,45 @@ server <- function(input, output, session) {
         
         ## Define the X axis
         if(input$color_coord_secDistsPlotImageNames == TRUE &
+           input$color_coord_secDistsPlotSectionNames == TRUE &
            input$color_coord_secDistsPlotGroupNames == TRUE) {
           color_coord_secDistsPlotXaxis <- as.character(color_coord_ImgSectionsTbl$df$Group_Img_SectionName)
           
         } else if(input$color_coord_secDistsPlotImageNames == TRUE &
+                  input$color_coord_secDistsPlotSectionNames == TRUE &
                   input$color_coord_secDistsPlotGroupNames == FALSE) {
           color_coord_secDistsPlotXaxis <- as.character(color_coord_ImgSectionsTbl$df$Image_SectionName)
           
         } else if(input$color_coord_secDistsPlotImageNames == FALSE &
+                  input$color_coord_secDistsPlotSectionNames == TRUE &
                   input$color_coord_secDistsPlotGroupNames == TRUE) {
           color_coord_secDistsPlotXaxis <- as.character(color_coord_ImgSectionsTbl$df$Group_SectionName)
           
-        } else {color_coord_secDistsPlotXaxis <- as.character(color_coord_ImgSectionsTbl$df$SectionName)}
+        } else if(input$color_coord_secDistsPlotImageNames == TRUE &
+                  input$color_coord_secDistsPlotSectionNames == FALSE &
+                  input$color_coord_secDistsPlotGroupNames == TRUE) {
+          color_coord_secDistsPlotXaxis <- as.character(color_coord_ImgSectionsTbl$df$Group_ImgName)
+          
+        } else if(input$color_coord_secDistsPlotImageNames == FALSE &
+                  input$color_coord_secDistsPlotSectionNames == FALSE &
+                  input$color_coord_secDistsPlotGroupNames == TRUE) {
+          if(!is.null(color_coord_ImgSectionsTbl$df$GroupName)) {
+            color_coord_secDistsPlotXaxis <- as.character(color_coord_ImgSectionsTbl$df$GroupName)
+          } else {
+            color_coord_secDistsPlotXaxis <- as.character(color_coord_ImgSectionsTbl$df$SectionName)
+          }
+        } else if(input$color_coord_secDistsPlotImageNames == TRUE &
+                  input$color_coord_secDistsPlotSectionNames == FALSE &
+                  input$color_coord_secDistsPlotGroupNames == FALSE) {
+          if(!is.null(color_coord_ImgSectionsTbl$df$ImgName)) {
+            color_coord_secDistsPlotXaxis <- as.character(color_coord_ImgSectionsTbl$df$ImgName)
+          } else {
+            color_coord_secDistsPlotXaxis <- as.character(color_coord_ImgSectionsTbl$df$SectionName)
+          }
+          
+        } else {
+          color_coord_secDistsPlotXaxis <- as.character(color_coord_ImgSectionsTbl$df$SectionName)
+        }
         
         ###################
         # Generate plot
@@ -7574,7 +7655,8 @@ server <- function(input, output, session) {
                                                                             SectionName = color_coord_ImgSectionsTbl$df[i,"SectionName"],
                                                                             Group_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_SectionName"],
                                                                             Image_SectionName = color_coord_ImgSectionsTbl$df[i,"Image_SectionName"],
-                                                                            Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"])
+                                                                            Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"],
+                                                                            Group_ImgName = color_coord_ImgSectionsTbl$df[i,"ImgName"])
                                                                }))
         } else if(is.null(input$columnImageName) & !is.null(input$columnGroupName)) {
           color_coord_SecStatsDF4Plotting$df <- do.call(rbind,
@@ -7585,7 +7667,8 @@ server <- function(input, output, session) {
                                                                             SectionName = color_coord_ImgSectionsTbl$df[i,"SectionName"],
                                                                             Group_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_SectionName"],
                                                                             Image_SectionName = color_coord_ImgSectionsTbl$df[i,"Image_SectionName"],
-                                                                            Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"])
+                                                                            Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"],
+                                                                            Group_ImgName = color_coord_ImgSectionsTbl$df[i,"GroupName"])
                                                                }))
         } else if(!is.null(input$columnImageName) & !is.null(input$columnGroupName)) {
           color_coord_SecStatsDF4Plotting$df <- do.call(rbind,
@@ -7597,7 +7680,8 @@ server <- function(input, output, session) {
                                                                             SectionName = color_coord_ImgSectionsTbl$df[i,"SectionName"],
                                                                             Group_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_SectionName"],
                                                                             Image_SectionName = color_coord_ImgSectionsTbl$df[i,"Image_SectionName"],
-                                                                            Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"])
+                                                                            Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"],
+                                                                            Group_ImgName = color_coord_ImgSectionsTbl$df[i,"Group_ImgName"])
                                                                }))
         } else {
           color_coord_SecStatsDF4Plotting$df <- do.call(rbind,
@@ -7607,24 +7691,52 @@ server <- function(input, output, session) {
                                                                             SectionName = color_coord_ImgSectionsTbl$df[i,"SectionName"],
                                                                             Group_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_SectionName"],
                                                                             Image_SectionName = color_coord_ImgSectionsTbl$df[i,"Image_SectionName"],
-                                                                            Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"])
+                                                                            Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"],
+                                                                            Group_ImgName = color_coord_ImgSectionsTbl$df[i,"SectionName"])
                                                                }))
         }
 
         ## Define the X axis
         if(input$color_coord_secDistsStatsPlotImageNames == TRUE &
+           input$color_coord_secDistsStatsPlotSectionNames == TRUE &
            input$color_coord_secDistsStatsPlotGroupNames == TRUE) {
           color_coord_secDistsStatsPlotXaxis <- as.character(color_coord_SecStatsDF4Plotting$df$Group_Img_SectionName)
-
+          
         } else if(input$color_coord_secDistsStatsPlotImageNames == TRUE &
+                  input$color_coord_secDistsStatsPlotSectionNames == TRUE &
                   input$color_coord_secDistsStatsPlotGroupNames == FALSE) {
           color_coord_secDistsStatsPlotXaxis <- as.character(color_coord_SecStatsDF4Plotting$df$Image_SectionName)
-
+          
         } else if(input$color_coord_secDistsStatsPlotImageNames == FALSE &
+                  input$color_coord_secDistsStatsPlotSectionNames == TRUE &
                   input$color_coord_secDistsStatsPlotGroupNames == TRUE) {
           color_coord_secDistsStatsPlotXaxis <- as.character(color_coord_SecStatsDF4Plotting$df$Group_SectionName)
-
-        } else {color_coord_secDistsStatsPlotXaxis <- as.character(color_coord_SecStatsDF4Plotting$df$SectionName)}
+          
+        } else if(input$color_coord_secDistsStatsPlotImageNames == TRUE &
+                  input$color_coord_secDistsStatsPlotSectionNames == FALSE &
+                  input$color_coord_secDistsStatsPlotGroupNames == TRUE) {
+          color_coord_secDistsStatsPlotXaxis <- as.character(color_coord_SecStatsDF4Plotting$df$Group_ImgName)
+          
+        } else if(input$color_coord_secDistsStatsPlotImageNames == FALSE &
+                  input$color_coord_secDistsStatsPlotSectionNames == FALSE &
+                  input$color_coord_secDistsStatsPlotGroupNames == TRUE) {
+          if(!is.null(color_coord_SecStatsDF4Plotting$df$GroupName)) {
+            color_coord_secDistsStatsPlotXaxis <- as.character(color_coord_SecStatsDF4Plotting$df$GroupName)
+          } else {
+            color_coord_secDistsStatsPlotXaxis <- as.character(color_coord_SecStatsDF4Plotting$df$SectionName)
+          }
+        } else if(input$color_coord_secDistsStatsPlotImageNames == TRUE &
+                  input$color_coord_secDistsStatsPlotSectionNames == FALSE &
+                  input$color_coord_secDistsStatsPlotGroupNames == FALSE) {
+          if(!is.null(color_coord_SecStatsDF4Plotting$df$ImgName)) {
+            color_coord_secDistsStatsPlotXaxis <- as.character(color_coord_SecStatsDF4Plotting$df$ImgName)
+          } else {
+            color_coord_secDistsStatsPlotXaxis <- as.character(color_coord_SecStatsDF4Plotting$df$SectionName)
+          }
+          
+        } else {
+          color_coord_secDistsStatsPlotXaxis <- as.character(color_coord_SecStatsDF4Plotting$df$SectionName)
+        }
 
         ###################
         # Generate the plot
@@ -7637,8 +7749,9 @@ server <- function(input, output, session) {
 
           geom_flat_violin(position = position_nudge(x = .2, y = 0)) +
           
-          geom_point(aes(y = Distance, color = "lightgrey"), show.legend = F,
-                     position = position_jitter(width = .15), size = 1.2, alpha = 0.7) +
+          ## As plotting the points takes a lot of time we remove that layer.
+          # geom_point(aes(y = Distance, color = "lightgrey"), show.legend = F,
+          #            position = position_jitter(width = .15), size = 1.2, alpha = 0.7) +
 
           geom_boxplot(width = .1, guides = FALSE, outlier.shape = NA) +
 
@@ -7729,7 +7842,8 @@ server <- function(input, output, session) {
                                                                          SectionName = color_coord_ImgSectionsTbl$df[i,"SectionName"],
                                                                          Group_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_SectionName"],
                                                                          Image_SectionName = color_coord_ImgSectionsTbl$df[i,"Image_SectionName"],
-                                                                         Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"])
+                                                                         Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"],
+                                                                         Group_ImgName = color_coord_ImgSectionsTbl$df[i,"ImgName"])
                                                             }))
         } else if(is.null(input$columnImageName) & !is.null(input$columnGroupName)) {
           color_coord_SecDistsDF4ANOVA$df <- do.call(rbind,
@@ -7740,7 +7854,8 @@ server <- function(input, output, session) {
                                                                          SectionName = color_coord_ImgSectionsTbl$df[i,"SectionName"],
                                                                          Group_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_SectionName"],
                                                                          Image_SectionName = color_coord_ImgSectionsTbl$df[i,"Image_SectionName"],
-                                                                         Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"])
+                                                                         Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"],
+                                                                         Group_ImgName = color_coord_ImgSectionsTbl$df[i,"GroupName"])
                                                             }))
         } else if(!is.null(input$columnImageName) & !is.null(input$columnGroupName)) {
           color_coord_SecDistsDF4ANOVA$df <- do.call(rbind,
@@ -7752,7 +7867,8 @@ server <- function(input, output, session) {
                                                                          SectionName = color_coord_ImgSectionsTbl$df[i,"SectionName"],
                                                                          Group_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_SectionName"],
                                                                          Image_SectionName = color_coord_ImgSectionsTbl$df[i,"Image_SectionName"],
-                                                                         Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"])
+                                                                         Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"],
+                                                                         Group_ImgName = color_coord_ImgSectionsTbl$df[i,"Group_ImgName"])
                                                             }))
         } else {
           color_coord_SecDistsDF4ANOVA$df <- do.call(rbind,
@@ -7762,7 +7878,8 @@ server <- function(input, output, session) {
                                                                          SectionName = color_coord_ImgSectionsTbl$df[i,"SectionName"],
                                                                          Group_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_SectionName"],
                                                                          Image_SectionName = color_coord_ImgSectionsTbl$df[i,"Image_SectionName"],
-                                                                         Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"])
+                                                                         Group_Img_SectionName = color_coord_ImgSectionsTbl$df[i,"Group_Img_SectionName"],
+                                                                         Group_ImgName = color_coord_ImgSectionsTbl$df[i,"SectionName"])
                                                             }))
         }
         
