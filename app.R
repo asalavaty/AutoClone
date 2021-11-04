@@ -19,6 +19,7 @@ library(fishualize)
 library(waiter)
 library(argonR)
 library(bs4Dash)
+library(sortable)
 library(ICSNP)
 library(magrittr)
 library(plyr)
@@ -3121,6 +3122,7 @@ ui = bs4DashPage(
                                                                 # Show error bars
                                                                 argonColumn(width = 6, center = FALSE,
                                                                 tags$b("Add error bars?"),
+                                                                bs4Dash::tooltip(title = "Adding error bar is only possible for unique variables!", placement = "top",
                                                                 prettyToggle(
                                                                   inputId = "color_coord_secDistsPlotErrorBars",
                                                                   label_on = "Yes!", 
@@ -3129,7 +3131,8 @@ ui = bs4DashPage(
                                                                   status_off = "warning", 
                                                                   label_off = "No",
                                                                   icon_off = icon("times"),
-                                                                  value = TRUE
+                                                                  value = FALSE
+                                                                )
                                                                 )
                                                                 )
                                                                 ),
@@ -3145,6 +3148,16 @@ ui = bs4DashPage(
                                                                     size = 5,
                                                                     `live-search` = TRUE)
                                                                 ),
+                                                                
+                                                                bs4Accordion(id = "color_coord_majorSecClonalityPlot_orderingAccordion", 
+                                                                             bs4AccordionItem(
+                                                                               title = "Reorder the Y axis labels", 
+                                                                               status = "secondary", collapsed = FALSE, solidHeader = TRUE,
+                                                                               uiOutput(outputId = "color_coord_majorSecClonalityPlot_orderingUI")
+                                                                             )
+                                                                ),
+                                                                
+                                                                br(),
                                                                 
                                                                 plotOutput(outputId = "color_coord_majorSecClonalityPlot") %>% shinycssloaders::withSpinner(type = 4),
                                                                 
@@ -3403,6 +3416,16 @@ ui = bs4DashPage(
                                                     size = 5,
                                                     `live-search` = TRUE)
                                                 ),
+                                                
+                                                bs4Accordion(id = "color_coord_SecClonalityStatsPlot_orderingAccordion", 
+                                                             bs4AccordionItem(
+                                                               title = "Reorder the Y axis labels", 
+                                                               status = "secondary", collapsed = FALSE, solidHeader = TRUE,
+                                                               uiOutput(outputId = "color_coord_SecClonalityStatsPlot_orderingUI")
+                                                             )
+                                                ),
+                                                
+                                                br(),
                                                 
                                                 plotOutput(outputId = "color_coord_SecClonalityStatsPlot") %>% shinycssloaders::withSpinner(type = 4),
                                                 
@@ -7490,13 +7513,36 @@ server <- function(input, output, session) {
           color_coord_secDistsPlotXaxis <- as.character(color_coord_ImgSectionsTbl$df$SectionName)
         }
         
+        # Ordering the X axis labels
+        output$color_coord_majorSecClonalityPlot_orderingUI <- renderUI({
+          rank_list(
+            text = NULL,
+            labels = unique(color_coord_secDistsPlotXaxis),
+            input_id = "color_coord_majorSecClonalityPlot_ordering",
+            options = sortable_options(multiDrag = TRUE)
+          )
+        })
+        
+        ###################
+        
+        ## Enable errorbar option
+        observe({
+          if(!any(duplicated(color_coord_secDistsPlotXaxis))) {
+            shinyjs::enable("color_coord_secDistsPlotErrorBars")
+          } else {
+            shinyjs::reset("color_coord_secDistsPlotErrorBars")
+            shinyjs::disable("color_coord_secDistsPlotErrorBars")
+          }
+        })
+        
         ###################
         # Generate plot
         
         color_coord_secDistsPlot <- 
           color_coord_ImgSectionsTbl$df %>% 
           ggplot(
-            aes(x = color_coord_secDistsPlotXaxis, y = Mean, fill = color_coord_secDistsPlotXaxis)) + 
+            aes(x = factor(color_coord_secDistsPlotXaxis, levels = rev(input$color_coord_majorSecClonalityPlot_ordering)), 
+                y = Mean, fill = color_coord_secDistsPlotXaxis)) + 
           ylab("Mean Distance") + xlab(NULL) +
           scale_fill_manual(name = NULL,
                             values = fish(n = length(unique(color_coord_secDistsPlotXaxis)), 
@@ -7510,12 +7556,12 @@ server <- function(input, output, session) {
         
         if(input$color_coord_secDistsPlotErrorBars == TRUE) {
           color_coord_secDistsPlot <- color_coord_secDistsPlot + 
-            geom_errorbar(aes(ymin=Mean - 1, ymax=Mean+abs(SD)), width=.2, color = "black",
+            geom_errorbar(aes(ymin=Mean-abs(SD), ymax=Mean+abs(SD)), width=.2, color = "black",
                           position=position_dodge(width = .9))
         }
         
         color_coord_secDistsPlot <- color_coord_secDistsPlot +
-          geom_bar(stat = "identity", width = 0.5, show.legend = FALSE) + 
+          geom_bar(stat = "summary", fun = "mean", width = 0.5, show.legend = FALSE) + 
           coord_flip()
         
         ###################
@@ -7737,6 +7783,16 @@ server <- function(input, output, session) {
         } else {
           color_coord_secDistsStatsPlotXaxis <- as.character(color_coord_SecStatsDF4Plotting$df$SectionName)
         }
+        
+        # Ordering the X axis labels
+        output$color_coord_SecClonalityStatsPlot_orderingUI <- renderUI({
+          rank_list(
+            text = NULL,
+            labels = unique(color_coord_secDistsStatsPlotXaxis),
+            input_id = "color_coord_SecClonalityStatsPlot_ordering",
+            options = sortable_options(multiDrag = TRUE)
+          )
+        })
 
         ###################
         # Generate the plot
@@ -7744,7 +7800,7 @@ server <- function(input, output, session) {
 
           ggplot(data = color_coord_SecStatsDF4Plotting$df,
                  aes(y = Distance,
-                     x = color_coord_secDistsStatsPlotXaxis,
+                     x = factor(color_coord_secDistsStatsPlotXaxis, levels = rev(input$color_coord_SecClonalityStatsPlot_ordering)),
                      fill = color_coord_secDistsStatsPlotXaxis)) +
 
           geom_flat_violin(position = position_nudge(x = .2, y = 0)) +
