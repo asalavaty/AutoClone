@@ -4227,15 +4227,15 @@ server <- function(input, output, session) {
             
             contactEmail = emayili::envelope() %>%
                 from(input$fromUser) %>%
-                to("influential.shiny.app@gmail.com") %>%
+                to("autoclone.shiny.app@gmail.com") %>%
                 subject(input$subjectUser) %>%
                 text(paste(paste0("This email is sent from: ", input$userContactName, "\n\n", "Regarding the AutoClone App", "\n\n", 
                                   "User email address: ", input$fromUser, "\n"), "\n", input$messageUser))
             
             smtp4contactEmail = emayili::server(host = "smtp.gmail.com" # need to make sure it knows it's the emayili::server function, not the shiny::server function
                                                 , port = 465
-                                                , username = "influential.shiny.app@gmail.com"
-                                                , password = "absa9531!")
+                                                , username = "autoclone.shiny.app@gmail.com"
+                                                , password = "XXXXXXXXX")
             
             withProgress(message = 'Sending the email is in progress ...',
                          detail = 'This may take a while...', value = 60, max = 100,  {
