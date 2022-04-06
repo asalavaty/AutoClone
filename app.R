@@ -30,7 +30,7 @@ library(emayili)
 
 Email_Addresses <- suppressWarnings(read.csv(file = "www/Email_database/Email_Addresses.csv", header = TRUE, sep = ","))
 
-adrian_url <- "https://www.abbassalavaty.com/"
+adrian_url <- "https://www.asalavaty.com/"
 pete_url <- "https://www.armi.org.au/about/our-people/peter-currie/"
 
 # options(bitmapType='cairo')
@@ -568,7 +568,7 @@ ui = bs4DashPage(
     header = dashboardHeader(title = dashboardBrand(
         title = tags$i("Adrian Salavaty", style = "font-size:18px;"),
         color = "gray-dark",
-        href = "https://www.abbassalavaty.com/",
+        href = "https://www.asalavaty.com/",
         image = "Adrian (Abbas) Salavaty-Logo.jpg"
     ),
                              titleWidth = NULL,
@@ -4235,7 +4235,7 @@ server <- function(input, output, session) {
             smtp4contactEmail = emayili::server(host = "smtp.gmail.com" # need to make sure it knows it's the emayili::server function, not the shiny::server function
                                                 , port = 465
                                                 , username = "autoclone.shiny.app@gmail.com"
-                                                , password = "XXXXXXXXX")
+                                                , password = "XXXXXXXXXXX")
             
             withProgress(message = 'Sending the email is in progress ...',
                          detail = 'This may take a while...', value = 60, max = 100,  {
