@@ -7604,15 +7604,15 @@ server <- function(input, output, session) {
 
           # Generate table of autoclonization
           
-          if(color_coord_ImgSectionsTbl$df$SectionName == gsub(pattern = "-", replacement = "", 
-                                                               x = color_coord_ImgSectionsTbl$df$Group_Img_SectionName)) {
+          if(any(color_coord_ImgSectionsTbl$df$SectionName == gsub(pattern = "-", replacement = "", 
+                                                               x = color_coord_ImgSectionsTbl$df$Group_Img_SectionName))) {
             color_coord_ImgSectionsTbl4Table <- color_coord_ImgSectionsTbl$df[,c(1, 5, 6)]
             
-          } else if(color_coord_ImgSectionsTbl$df$SectionName == gsub(pattern = "-", replacement = "", 
-                                                                      x = color_coord_ImgSectionsTbl$df$Group_SectionName)) {
+          } else if(any(color_coord_ImgSectionsTbl$df$SectionName == gsub(pattern = "-", replacement = "", 
+                                                                      x = color_coord_ImgSectionsTbl$df$Group_SectionName))) {
             color_coord_ImgSectionsTbl4Table <- color_coord_ImgSectionsTbl$df[,c(2, 5, 6)]
-          } else if(color_coord_ImgSectionsTbl$df$SectionName == gsub(pattern = "-", replacement = "", 
-                                                                      x = color_coord_ImgSectionsTbl$df$Image_SectionName)) {
+          } else if(any(color_coord_ImgSectionsTbl$df$SectionName == gsub(pattern = "-", replacement = "", 
+                                                                      x = color_coord_ImgSectionsTbl$df$Image_SectionName))) {
             color_coord_ImgSectionsTbl4Table <- color_coord_ImgSectionsTbl$df[,c(3, 5, 6)]
           } else {
             color_coord_ImgSectionsTbl4Table <- color_coord_ImgSectionsTbl$df[,c(4, 5, 6)]
