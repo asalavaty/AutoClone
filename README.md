@@ -28,8 +28,7 @@ quantifications and statistical analyses.
 
 ## Author
 
-The `AutoClone` was developed by [Adrian (Abbas)
-Salavaty](https://www.abbassalavaty.com/)
+The `AutoClone` was developed by [Adrian Salavaty](https://www.asalavaty.com/)
 
 ## Advisor
 
@@ -44,7 +43,7 @@ Peter D. Currie
 To cite `AutoClone`, please cite its Zenodo DOI:
 
 -   AutoClone: automatic analysis of genetic labelling data and
-    clonality assessment. Abbas Salavaty and Peter D. Currie. (2021).
+    clonality assessment. Adrian Salavaty and Peter D. Currie. (2021).
     *Zenodo*.
     **[DOI:10.5281/zenodo.5553555](https://doi.org/10.5281/zenodo.5553555)**.
 
